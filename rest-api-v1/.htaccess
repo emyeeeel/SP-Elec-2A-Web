@@ -1,0 +1,44 @@
+# RewriteEngine On
+# Purpose : Enables the Apache mod_rewrite engine, which allows URL rewriting.
+# What it does : Without this line, the subsequent rewrite rules would be ignored.
+RewriteEngine On
+
+# RewriteCond %{REQUEST_FILENAME} !-f
+# Purpose : Checks if the requested URL does not map to an existing file.
+# Breakdown :
+#   %{REQUEST_FILENAME}: The full path to the file requested by the user.
+#       !-f: The ! negates the condition, so this line means:
+#       
+#       "If the requested filename is NOT a valid file on the server..."
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# RewriteCond %{REQUEST_FILENAME} !-d
+# Purpose : Checks if the requested URL does not map to an existing directory.
+#Breakdown :
+#   !-d:
+#
+#   "If the requested filename is NOT a valid directory on the server..."
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# RewriteRule ^(.*)$ index.php [QSA,L]
+# Purpose : Rewrites the URL to index.php if the previous conditions are met.
+# Breakdown :
+#   ^(.*)$:
+#   A regular expression that matches any URL path (e.g., /books/123).
+#
+#   ^ = start of the string.
+#
+#   (.*) = capture all characters (the entire URL path).
+##
+#   $ = end of the string.
+#
+#   index.php:
+#   The target script that will handle all rewritten requests.
+#
+#   Flags :
+#   [QSA]: Query String Append
+#   Preserves existing query parameters (e.g., ?id=1 in /books?id=1).
+# 
+#   [L]: Last Rule
+#   Stops processing further rewrite rules if this one matches.
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]

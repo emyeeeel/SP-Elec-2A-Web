@@ -17,8 +17,8 @@ $db = new DBORM('mysql:host=localhost;dbname=usjr','root','root');
 // $result = $db->select()->from('students')->where('studfname','Roderick')->get(); // Get a single row fron a table that matches the criteria
 // echo $db->showQuery();
 
-$result = $db->table('students')->where('studfirstname','Kang')->update(['studfirstname'=>'Hanni']); // sample update
-echo $db->showQuery();
-
-// $result = $db->table('students')->where('studid', 789456123)->delete(); // sample delete
+// $result = $db->table('students')->where('studfirstname','Seulgi')->update(['studfirstname'=>'Irene']); // sample update
 // echo $db->showQuery();
+
+$result = $db->table('students')->where('studid', 2021008986)->delete(); // sample delete
+echo $db->showQuery();

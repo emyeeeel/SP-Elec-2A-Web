@@ -228,7 +228,4 @@ class DBORM implements iDBFuncs{
         $this->sql = "DELETE FROM " . $this->table . " " . $this->sql;
         return $this->_executeQuery();
     }
-
-
-
 }

@@ -1,33 +1,45 @@
 <?php
 require_once 'init.php';
 
-// Initialize the database connection
-$db = new Database('localhost', 'root', 'root', 'rest_api');
+// 1. Initialize DBORM with your database credentials
+$driver = 'mysql:host=localhost;dbname=rest_api;charset=utf8'; // PDO-compatible DSN
+$user = 'root';
+$password = 'root';
 
-// Initialize the user repository
-$userRepository = new UserRepository($db);
+$dbORM = new DBORM($driver, $user, $password);
 
-// Initialize the request object
+// 2. Initialize the user repository with DBORM
+$userRepository = new UserRepository($dbORM); // Ensure UserRepository accepts iDBFuncs
+
+// 3. Initialize the request object
 $request = new Request();
 
-// Initialize the user controller with dependencies
+// 4. Initialize the user controller
 $controller = new UserController($userRepository, $request);
 
-// Load routes
+// 5. Load routes
 $routes = include __DIR__ . '/routes.php';
 
-// Initialize the router
+// 6. Initialize the router
 $router = new Router($request, new RouteMatcher());
 
-// Register routes
+// 7. Register routes
 foreach ($routes as $route) {
     $router->addRoute($route['method'], $route['path'], $route['handler']);
 }
 
-// Dispatch the request
-$response = $router->dispatch();
+// 8. Dispatch the request and handle errors
+try {
+    $response = $router->dispatch();
+} catch (PDOException $e) {
+    // Handle database errors
+    $response = new Response(500, ['error' => 'Database error: ' . $e->getMessage()]);
+} catch (Exception $e) {
+    // Handle other exceptions
+    $response = new Response(500, ['error' => 'Server error: ' . $e->getMessage()]);
+}
 
-// Send the response
+// 9. Send the response
 http_response_code($response->getStatusCode());
 header('Content-Type: application/json');
 echo $response->getBody();

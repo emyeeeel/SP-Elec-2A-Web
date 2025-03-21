@@ -9,31 +9,32 @@ class UserController {
     }
 
     public function getAllUsers() {
-        return new Response(200, json_encode($this->userRepository->getAll()));
+        $users = $this->userRepository->getAll();
+        return new Response(200, $users); // No json_encode here
     }
 
     public function getUserById($id) {
         $user = $this->userRepository->getById($id);
         if (empty($user)) {
-            return new Response(404, json_encode(['error' => 'User not found']));
+            return new Response(404, ['error' => 'User not found']);
         }
-        return new Response(200, json_encode($user[0]));
+        return new Response(200, $user); // No json_encode here
     }
 
     public function createUser() {
         $data = $this->request->getBody();
         $this->userRepository->create($data);
-        return new Response(201, json_encode(['message' => 'User created']));
+        return new Response(201, ['message' => 'User created']);
     }
 
     public function updateUser($id) {
         $data = $this->request->getBody();
         $this->userRepository->update($id, $data);
-        return new Response(200, json_encode(['message' => 'User updated']));
+        return new Response(200, ['message' => 'User updated']);
     }
 
     public function deleteUser($id) {
         $this->userRepository->delete($id);
-        return new Response(204, '');
+        return new Response(204, null);
     }
 }
